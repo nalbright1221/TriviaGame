@@ -1,10 +1,9 @@
-// create  array with objects containing questions and answers and correct answer 
-//make answers into answerOptions
+//array with objects containing questions/answers/correct answer 
 var questions = [{
         question: 'What is the capital of Italy?',
         answers: ['Milan', 'Turin', 'Rome', 'Naples'],
         correctAnswer: 'Rome',
-        image: ''
+        image:  ''
     },
 
     {
@@ -36,9 +35,9 @@ var questions = [{
         question: 'Which roman emperor was assassinated on the Ides of March?',
         answers: ['Julius', 'Augustus', 'Nero', 'Octavius'],
         correctAnswer: 'Julius',
-        image: ''
+        image: '/images/ceasar.jpg'
     }
-]
+];
 
 //global variable for
 //wins/losses/unchosen answer
@@ -48,13 +47,35 @@ var wins = 0;
 var losses = 0;
 var notChosen = 0;
 var number = 31;
+var timeSpacer = 6;
 var intervalId;
 var currentQuestion = 0;
+
+//waits until the document is ready to load
+//hides the timer until start button is clicked
+//hides the questions until start button is clicked 
+$(document).ready(function () {
+    $("#start").show();
+    $("timer").hide();
+    $("#question-answers").hide();
+})
+
+//end game function will show player how many answers they got right or wrong 
+var endGame = function () {
+    $("#question-answers").hide();
+    $("timer").hide();
+    $("#wins").text("Answered Correctly: " + wins);
+    $("#losses").text("Answered Incorrectly: " + losses);
+    $("#not-answered").text("Answered Not Chosen: " + notChosen);
+}
 
 //user clicks start button 
 $("#start").on("click", function () {
     //hides start button once its been clicked 
     $('#start').attr("hidden", true);
+    //timer and questions and answers shown
+    $("timer").show();
+    $("#question-answers").show();
     run();
     //calls function to show first question 
     setQuestion(currentQuestion);
@@ -73,22 +94,24 @@ function decrement() {
     number--;
 
     //  Show the number in the #seconds-remaining in html.
-    $("#seconds-remaining").html("<h2>" + number + "</h2>");
+    $("#seconds-remaining").html("Seconds Remaining: " + number);
 
     if (number === 0) {
 
         //if timer gets to 0, the next question will load 
         currentQuestion++;
         setQuestion(currentQuestion);
+
         number = 31;
-        //  ...run the stop function.
-        // stop();
 
         //increments not answered score by 1 
         notChosen++;
-        $("#not-answered").html(notChosen);
+        // $("#result").text("Mi dispiace... You didnt choose an answer. The correct answer was " + questions[currentQuestion].correctAnswer);
     }
 }
+
+
+
 
 function stop() {
     //  Clears our intervalId
@@ -109,24 +132,35 @@ var setQuestion = function (index) {
     number = 31;
 }
 
+
 //on  click function that  logs  whatever answer has been chosen 
 $(".answer").on("click", function () {
+
     //this gets the text from the button clicked 
     $(this).text()
 
     //compares and increments answers correctly answered 
     if ($(this).text() === questions[currentQuestion].correctAnswer) {
-            wins++;
-            $("#wins").html(wins);
-    } 
-    //compares and increments answers not correctly answered  
-    else { 
-         losses++;
-        $("#losses").html(losses);
+        wins++;
+        // $("#result").text("Bellissimo! You answered Correctly!");
+        // $("#image").text('<img src=' + questions[currentQuestion].image + '/>');
     }
 
-//moves on to the nest question 
-    currentQuestion++;
-    setQuestion(currentQuestion);
-})
+    //this works if you select the correct answer 
+    
+    //compares and increments answers not correctly answered  
+    else {
+        losses++;        
+        // $("#result").text("Mi dispiace...  The correct answer was " + questions[currentQuestion].correctAnswer);
+    }
+    
+    if (currentQuestion === 5) {
+        $("#seconds-remaining").hide();
 
+        endGame();
+    }
+    //moves on to the nest question 
+    // setTimeout(2000);
+    currentQuestion++;
+    setQuestion(currentQuestion).delay( 800 );
+});

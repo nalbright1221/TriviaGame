@@ -1,0 +1,11 @@
+body {
+    background-image: url("../images/background.jpg");
+    background-image: repeat;
+}
+
+.body {
+    margin: 0 auto;
+    text-align: center;
+    background-color: white;
+    width: 800px;
+}
